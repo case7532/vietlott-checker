@@ -154,7 +154,7 @@ function Result() {
 
           {activeTab === 2 && (
             <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
-              <FrequencyAnalysis frequencyData={frequencyData} maxNumber={maxNumber} />
+              <FrequencyAnalysis frequencyData={frequencyData} maxNumber={maxNumber} draws={draws} />
             </Box>
           )}
         </Box>
