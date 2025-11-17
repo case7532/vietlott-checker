@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Paper,
   Typography,
@@ -9,11 +9,23 @@ import {
   LinearProgress,
   Grid,
   Stack,
+  Card,
+  CardContent,
+  Divider,
+  Alert,
 } from '@mui/material';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { formatDate } from '../utils/mockData';
+import { generatePredictedCombinations } from '../utils/probabilityAnalysis';
 
-function FrequencyAnalysis({ frequencyData, maxNumber = 55 }) {
+function FrequencyAnalysis({ frequencyData, maxNumber = 55, draws }) {
   const [sortBy, setSortBy] = useState('frequency'); // 'frequency' or 'number'
+
+  // Tính toán dự đoán dựa trên phân tích xác suất
+  const predictions = useMemo(() => {
+    return generatePredictedCombinations(draws, maxNumber, 6, 5);
+  }, [draws, maxNumber]);
 
   const sortedData = [...frequencyData].sort((a, b) => {
     if (sortBy === 'frequency') {
@@ -47,12 +59,99 @@ function FrequencyAnalysis({ frequencyData, maxNumber = 55 }) {
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Thống kê tần suất xuất hiện
+          Thống kê tần suất & Dự đoán Xác suất
         </Typography>
         <Typography color="text.secondary">
-          Phân tích {maxNumber} số từ 100 kỳ quay gần nhất
+          Phân tích {maxNumber} số từ 100 kỳ quay gần nhất với các phương pháp thống kê
         </Typography>
       </Box>
+
+      {/* Predictions Section */}
+      <Alert severity="info" icon={<TrendingUpIcon />} sx={{ mb: 4 }}>
+        <Typography variant="subtitle2" fontWeight="bold">
+          Lưu ý: Các dự đoán dựa trên phân tích thống kê dữ liệu lịch sử.
+          Xác suất chỉ mang tính tham khảo, không đảm bảo kết quả.
+        </Typography>
+      </Alert>
+
+      <Box sx={{ mb: 4 }}>
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+          <EmojiEventsIcon color="primary" />
+          <Typography variant="h5" fontWeight="bold">
+            Top {predictions.length} Chuỗi số Dự đoán
+          </Typography>
+        </Stack>
+
+        <Grid container spacing={2}>
+          {predictions.map((pred, index) => (
+            <Grid item xs={12} md={6} lg={4} key={index}>
+              <Card variant="outlined" sx={{ height: '100%', bgcolor: index === 0 ? 'primary.50' : 'background.paper' }}>
+                <CardContent>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                    <Chip
+                      label={`#${index + 1}`}
+                      size="small"
+                      color={index === 0 ? 'primary' : 'default'}
+                      sx={{ fontWeight: 'bold' }}
+                    />
+                    <Typography variant="subtitle2" fontWeight="bold">
+                      {pred.name}
+                    </Typography>
+                  </Stack>
+
+                  <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+                    {pred.description}
+                  </Typography>
+
+                  <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
+                    {pred.numbers.map((num, idx) => (
+                      <Chip
+                        key={idx}
+                        label={num}
+                        size="medium"
+                        sx={{
+                          bgcolor: 'primary.main',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: '1rem',
+                          minWidth: 40,
+                        }}
+                      />
+                    ))}
+                  </Stack>
+
+                  <Divider sx={{ my: 1 }} />
+
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography variant="caption" color="text.secondary">
+                      Phương pháp:
+                    </Typography>
+                    <Typography variant="caption" fontWeight="600">
+                      {pred.strategy}
+                    </Typography>
+                  </Stack>
+
+                  <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 0.5 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Độ tin cậy:
+                    </Typography>
+                    <Typography variant="caption" fontWeight="bold" color="primary">
+                      {pred.confidence.toFixed(1)}%
+                    </Typography>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      <Divider sx={{ my: 4 }} />
+
+      {/* Frequency Analysis Section */}
+      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>
+        Phân tích Tần suất Chi tiết
+      </Typography>
 
       {/* Sort Controls */}
       <ButtonGroup sx={{ mb: 3 }} fullWidth>

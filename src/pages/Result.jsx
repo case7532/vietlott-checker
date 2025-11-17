@@ -127,18 +127,13 @@ function Result() {
         {/* Tab Content */}
         <Box>
           {activeTab === 0 && (
-            <Grid container spacing={3}>
-              <Grid item xs={12} lg={6}>
-                <DrawsList
-                  draws={draws}
-                  onSelectDraw={handleSelectDraw}
-                  selectedDrawId={selectedDraw?.id}
-                />
-              </Grid>
-              <Grid item xs={12} lg={6}>
-                <DrawDetail draw={selectedDraw} />
-              </Grid>
-            </Grid>
+            <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
+              <DrawsList
+                draws={draws}
+                onSelectDraw={handleSelectDraw}
+                selectedDrawId={selectedDraw?.id}
+              />
+            </Box>
           )}
 
           {activeTab === 1 && (
