@@ -1,5 +1,19 @@
 import { useState, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Tabs,
+  Tab,
+  Paper,
+  Grid,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import SearchIcon from '@mui/icons-material/Search';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import DrawsList from '../components/DrawsList';
 import DrawDetail from '../components/DrawDetail';
 import FrequencyAnalysis from '../components/FrequencyAnalysis';
@@ -10,7 +24,7 @@ function Result() {
   const navigate = useNavigate();
   const { selectedDate, selectedLottery } = location.state || {};
 
-  const [activeTab, setActiveTab] = useState('draws'); // 'draws', 'detail', 'frequency'
+  const [activeTab, setActiveTab] = useState(0);
   const [selectedDraw, setSelectedDraw] = useState(null);
 
   // Generate mock data
@@ -25,114 +39,142 @@ function Result() {
 
   const handleSelectDraw = (draw) => {
     setSelectedDraw(draw);
-    setActiveTab('detail');
+    setActiveTab(1);
   };
 
   if (!selectedDate || !selectedLottery) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Không có dữ liệu</h2>
-          <p className="text-gray-600 mb-6">Vui lòng chọn ngày và loại giải để kiểm tra kết quả.</p>
-          <button
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #e3f2fd 0%, #c5cae9 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 2,
+        }}
+      >
+        <Paper elevation={6} sx={{ p: 4, maxWidth: 400, textAlign: 'center' }}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            Không có dữ liệu
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Vui lòng chọn ngày và loại giải để kiểm tra kết quả.
+          </Typography>
+          <Button
+            variant="contained"
             onClick={() => navigate('/')}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
+            startIcon={<ArrowBackIcon />}
           >
             Quay lại
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Paper>
+      </Box>
     );
   }
 
   const lotteryName = selectedLottery === '655' ? 'Mega 6/55' : 'Power 6/45';
 
-  const tabs = [
-    { id: 'draws', label: 'Danh sách kỳ quay', icon: '📋' },
-    { id: 'detail', label: 'Chi tiết kỳ quay', icon: '🔍' },
-    { id: 'frequency', label: 'Thống kê tần suất', icon: '📊' },
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #e3f2fd 0%, #c5cae9 100%)',
+        py: 4,
+        px: 2,
+      }}
+    >
+      <Container maxWidth="xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <button
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Button
             onClick={() => navigate('/')}
-            className="mb-4 text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-2 mx-auto"
+            startIcon={<ArrowBackIcon />}
+            sx={{ mb: 2 }}
           >
-            ← Quay lại trang chủ
-          </button>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Kết quả xổ số</h1>
-          <p className="text-2xl text-indigo-600 font-semibold">{lotteryName}</p>
-          <p className="text-gray-600 mt-2">Dữ liệu 100 kỳ quay gần nhất</p>
-        </div>
+            Quay lại trang chủ
+          </Button>
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
+            Kết quả xổ số
+          </Typography>
+          <Typography variant="h5" color="primary" fontWeight="600">
+            {lotteryName}
+          </Typography>
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            Dữ liệu 100 kỳ quay gần nhất
+          </Typography>
+        </Box>
 
         {/* Tabs Navigation */}
-        <div className="bg-white rounded-2xl shadow-xl p-2 mb-6">
-          <div className="flex gap-2 flex-wrap">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 min-w-[150px] py-4 px-6 rounded-xl font-semibold transition duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <span className="mr-2">{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Paper elevation={3} sx={{ mb: 3 }}>
+          <Tabs
+            value={activeTab}
+            onChange={(e, newValue) => setActiveTab(newValue)}
+            variant="fullWidth"
+            sx={{
+              '& .MuiTab-root': {
+                py: 2,
+                fontWeight: 600,
+              },
+            }}
+          >
+            <Tab icon={<ListAltIcon />} label="Danh sách kỳ quay" iconPosition="start" />
+            <Tab icon={<SearchIcon />} label="Chi tiết kỳ quay" iconPosition="start" />
+            <Tab icon={<BarChartIcon />} label="Thống kê tần suất" iconPosition="start" />
+          </Tabs>
+        </Paper>
 
         {/* Tab Content */}
-        <div>
-          {activeTab === 'draws' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <DrawsList
-                draws={draws}
-                onSelectDraw={handleSelectDraw}
-                selectedDrawId={selectedDraw?.id}
-              />
-              <DrawDetail draw={selectedDraw} />
-            </div>
+        <Box>
+          {activeTab === 0 && (
+            <Grid container spacing={3}>
+              <Grid item xs={12} lg={6}>
+                <DrawsList
+                  draws={draws}
+                  onSelectDraw={handleSelectDraw}
+                  selectedDrawId={selectedDraw?.id}
+                />
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <DrawDetail draw={selectedDraw} />
+              </Grid>
+            </Grid>
           )}
 
-          {activeTab === 'detail' && (
-            <div className="max-w-4xl mx-auto">
+          {activeTab === 1 && (
+            <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
               <DrawDetail draw={selectedDraw} />
               {selectedDraw && (
-                <div className="mt-6 text-center">
-                  <button
-                    onClick={() => setActiveTab('draws')}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200"
+                <Box sx={{ mt: 3, textAlign: 'center' }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => setActiveTab(0)}
                   >
                     Xem danh sách kỳ quay
-                  </button>
-                </div>
+                  </Button>
+                </Box>
               )}
-            </div>
+            </Box>
           )}
 
-          {activeTab === 'frequency' && (
-            <div className="max-w-4xl mx-auto">
+          {activeTab === 2 && (
+            <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
               <FrequencyAnalysis frequencyData={frequencyData} maxNumber={maxNumber} />
-            </div>
+            </Box>
           )}
-        </div>
+        </Box>
 
         {/* Footer Note */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500 italic">
-            * Đây là dữ liệu mẫu phục vụ demo. Kết quả chính thức vui lòng kiểm tra tại website Vietlott.
-          </p>
-        </div>
-      </div>
-    </div>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          align="center"
+          sx={{ mt: 4, fontStyle: 'italic' }}
+        >
+          * Đây là dữ liệu mẫu phục vụ demo. Kết quả chính thức vui lòng kiểm tra tại website Vietlott.
+        </Typography>
+      </Container>
+    </Box>
   );
 }
 

@@ -1,58 +1,91 @@
+import {
+  Paper,
+  Typography,
+  Box,
+  List,
+  ListItemButton,
+  Chip,
+  Stack,
+} from '@mui/material';
 import { formatDate, formatCurrency } from '../utils/mockData';
 
 function DrawsList({ draws, onSelectDraw, selectedDrawId }) {
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">
+    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
         100 kỳ quay gần nhất
-      </h2>
+      </Typography>
 
-      <div className="max-h-[600px] overflow-y-auto pr-2">
-        <div className="space-y-2">
+      <Box sx={{ maxHeight: 600, overflow: 'auto', mt: 2 }}>
+        <List>
           {draws.map((draw) => (
-            <button
+            <ListItemButton
               key={draw.id}
               onClick={() => onSelectDraw(draw)}
-              className={`w-full text-left p-4 rounded-lg border-2 transition duration-200 hover:shadow-md ${
-                selectedDrawId === draw.id
-                  ? 'border-indigo-500 bg-indigo-50'
-                  : 'border-gray-200 hover:border-indigo-300'
-              }`}
+              selected={selectedDrawId === draw.id}
+              sx={{
+                mb: 1,
+                border: 1,
+                borderColor: selectedDrawId === draw.id ? 'primary.main' : 'divider',
+                borderRadius: 2,
+                bgcolor: selectedDrawId === draw.id ? 'primary.50' : 'background.paper',
+                '&:hover': {
+                  borderColor: 'primary.light',
+                },
+              }}
             >
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <span className="font-bold text-gray-800">Kỳ #{draw.drawNumber}</span>
-                  <p className="text-sm text-gray-600">{formatDate(draw.date)}</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-gray-500">Jackpot</span>
-                  <p className="font-bold text-orange-600 text-sm">
-                    {formatCurrency(draw.jackpot)} VNĐ
-                  </p>
-                </div>
-              </div>
+              <Box sx={{ width: '100%' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Box>
+                    <Typography fontWeight="bold">
+                      Kỳ #{draw.drawNumber}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {formatDate(draw.date)}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ textAlign: 'right' }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Jackpot
+                    </Typography>
+                    <Typography variant="body2" color="warning.main" fontWeight="bold">
+                      {formatCurrency(draw.jackpot)} VNĐ
+                    </Typography>
+                  </Box>
+                </Box>
 
-              <div className="flex gap-1 flex-wrap">
-                {draw.numbers.map((num, idx) => (
-                  <div
-                    key={idx}
-                    className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+                  {draw.numbers.map((num, idx) => (
+                    <Chip
+                      key={idx}
+                      label={num}
+                      size="small"
+                      sx={{
+                        bgcolor: 'primary.main',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        minWidth: 32,
+                      }}
+                    />
+                  ))}
+                </Stack>
+
+                {draw.winners.jackpot > 0 && (
+                  <Typography
+                    variant="caption"
+                    color="success.main"
+                    fontWeight="bold"
+                    sx={{ mt: 1, display: 'block' }}
                   >
-                    {num}
-                  </div>
-                ))}
-              </div>
-
-              {draw.winners.jackpot > 0 && (
-                <div className="mt-2 text-xs text-green-600 font-semibold">
-                  🎉 Có {draw.winners.jackpot} người trúng Jackpot!
-                </div>
-              )}
-            </button>
+                    🎉 Có {draw.winners.jackpot} người trúng Jackpot!
+                  </Typography>
+                )}
+              </Box>
+            </ListItemButton>
           ))}
-        </div>
-      </div>
-    </div>
+        </List>
+      </Box>
+    </Paper>
   );
 }
 

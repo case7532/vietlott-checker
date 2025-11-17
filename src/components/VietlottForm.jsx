@@ -1,5 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  Button,
+  Stack,
+} from '@mui/material';
 
 function VietlottForm() {
   const navigate = useNavigate();
@@ -18,7 +32,6 @@ function VietlottForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Chuyển hướng đến trang kết quả với dữ liệu
     navigate('/result', {
       state: {
         selectedDate,
@@ -33,104 +46,154 @@ function VietlottForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-          Kiểm tra kết quả Vietlott
-        </h1>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #e3f2fd 0%, #c5cae9 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2,
+      }}
+    >
+      <Container maxWidth="sm">
+        <Paper
+          elevation={6}
+          sx={{
+            p: 4,
+            borderRadius: 3,
+          }}
+        >
+          <Typography
+            variant="h4"
+            component="h1"
+            align="center"
+            fontWeight="bold"
+            gutterBottom
+            sx={{ mb: 4 }}
+          >
+            Kiểm tra kết quả Vietlott
+          </Typography>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Date Input */}
-          <div>
-            <label htmlFor="date-input" className="block text-sm font-semibold text-gray-700 mb-2">
-              Chọn ngày quay thưởng:
-            </label>
-            <input
-              type="date"
-              id="date-input"
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* Lottery Type Selection */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Chọn loại giải:
-            </label>
-            <div className="space-y-3">
-              {/* Mega 6/55 */}
-              <label
-                htmlFor="lottery-655"
-                className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition duration-200 ${
-                  selectedLottery === '655'
-                    ? 'border-indigo-500 bg-indigo-50'
-                    : 'border-gray-300 hover:border-indigo-300'
-                }`}
-              >
-                <input
-                  type="radio"
-                  id="lottery-655"
-                  name="lottery"
-                  value="655"
-                  checked={selectedLottery === '655'}
-                  onChange={(e) => setSelectedLottery(e.target.value)}
-                  className="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={3}>
+              {/* Date Input */}
+              <FormControl fullWidth>
+                <FormLabel sx={{ mb: 1, fontWeight: 600 }}>
+                  Chọn ngày quay thưởng:
+                </FormLabel>
+                <TextField
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  required
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
-                <span className="ml-3 text-gray-800 font-semibold">Mega 6/55</span>
-              </label>
+              </FormControl>
 
-              {/* Power 6/45 */}
-              <label
-                htmlFor="lottery-645"
-                className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition duration-200 ${
-                  selectedLottery === '645'
-                    ? 'border-indigo-500 bg-indigo-50'
-                    : 'border-gray-300 hover:border-indigo-300'
-                }`}
-              >
-                <input
-                  type="radio"
-                  id="lottery-645"
-                  name="lottery"
-                  value="645"
-                  checked={selectedLottery === '645'}
+              {/* Lottery Type Selection */}
+              <FormControl component="fieldset">
+                <FormLabel component="legend" sx={{ fontWeight: 600, mb: 1 }}>
+                  Chọn loại giải:
+                </FormLabel>
+                <RadioGroup
+                  value={selectedLottery}
                   onChange={(e) => setSelectedLottery(e.target.value)}
-                  className="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="ml-3 text-gray-800 font-semibold">Power 6/45</span>
-              </label>
-            </div>
-          </div>
+                >
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      p: 2,
+                      mb: 1,
+                      cursor: 'pointer',
+                      border: selectedLottery === '655' ? 2 : 1,
+                      borderColor: selectedLottery === '655' ? 'primary.main' : 'divider',
+                      bgcolor: selectedLottery === '655' ? 'primary.50' : 'transparent',
+                      '&:hover': {
+                        borderColor: 'primary.light',
+                      },
+                    }}
+                  >
+                    <FormControlLabel
+                      value="655"
+                      control={<Radio />}
+                      label={
+                        <Typography fontWeight={600}>Mega 6/55</Typography>
+                      }
+                    />
+                  </Paper>
 
-          {/* Action Buttons */}
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
-            >
-              Kiểm tra kết quả
-            </button>
-            <button
-              type="button"
-              onClick={handleReset}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
-            >
-              Làm mới
-            </button>
-          </div>
-        </form>
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      p: 2,
+                      cursor: 'pointer',
+                      border: selectedLottery === '645' ? 2 : 1,
+                      borderColor: selectedLottery === '645' ? 'primary.main' : 'divider',
+                      bgcolor: selectedLottery === '645' ? 'primary.50' : 'transparent',
+                      '&:hover': {
+                        borderColor: 'primary.light',
+                      },
+                    }}
+                  >
+                    <FormControlLabel
+                      value="645"
+                      control={<Radio />}
+                      label={
+                        <Typography fontWeight={600}>Power 6/45</Typography>
+                      }
+                    />
+                  </Paper>
+                </RadioGroup>
+              </FormControl>
 
-        {/* Info Note */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
+              {/* Action Buttons */}
+              <Stack direction="row" spacing={2} sx={{ pt: 2 }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  sx={{
+                    py: 1.5,
+                    fontWeight: 600,
+                    boxShadow: 2,
+                  }}
+                >
+                  Kiểm tra kết quả
+                </Button>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  size="large"
+                  fullWidth
+                  onClick={handleReset}
+                  sx={{
+                    py: 1.5,
+                    fontWeight: 600,
+                  }}
+                >
+                  Làm mới
+                </Button>
+              </Stack>
+            </Stack>
+          </form>
+
+          {/* Info Note */}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            align="center"
+            sx={{ mt: 3 }}
+          >
             Kết quả xổ số chỉ mang tính chất tham khảo
-          </p>
-        </div>
-      </div>
-    </div>
+          </Typography>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
 

@@ -1,11 +1,28 @@
+import {
+  Paper,
+  Typography,
+  Box,
+  Chip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Grid,
+  Alert,
+  Stack,
+} from '@mui/material';
 import { formatDateLong, formatCurrency } from '../utils/mockData';
 
 function DrawDetail({ draw }) {
   if (!draw) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-        <p className="text-gray-500">Chọn một kỳ để xem chi tiết</p>
-      </div>
+      <Paper elevation={3} sx={{ p: 4, textAlign: 'center', height: '100%' }}>
+        <Typography color="text.secondary">
+          Chọn một kỳ để xem chi tiết
+        </Typography>
+      </Paper>
     );
   }
 
@@ -44,129 +61,153 @@ function DrawDetail({ draw }) {
     draw.winners.thirdPrize;
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8">
+    <Paper elevation={3} sx={{ p: 4 }}>
       {/* Header */}
-      <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Chi tiết kỳ quay</h2>
-        <p className="text-xl text-indigo-600 font-semibold">
+      <Box sx={{ textAlign: 'center', mb: 3 }}>
+        <Typography variant="h4" fontWeight="bold" gutterBottom>
+          Chi tiết kỳ quay
+        </Typography>
+        <Typography variant="h6" color="primary" fontWeight="600">
           {lotteryName} - Kỳ #{draw.drawNumber}
-        </p>
-        <p className="text-gray-600 mt-1">{formatDateLong(draw.date)}</p>
-      </div>
+        </Typography>
+        <Typography color="text.secondary" sx={{ mt: 1 }}>
+          {formatDateLong(draw.date)}
+        </Typography>
+      </Box>
 
       {/* Winning Numbers */}
-      <div className="mb-8">
-        <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" fontWeight="bold" align="center" gutterBottom>
           Các số trúng thưởng
-        </h3>
-        <div className="flex justify-center gap-3 flex-wrap">
+        </Typography>
+        <Stack direction="row" spacing={1} justifyContent="center" flexWrap="wrap" useFlexGap>
           {draw.numbers.map((number, index) => (
-            <div
+            <Chip
               key={index}
-              className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg"
-            >
-              {number}
-            </div>
+              label={number}
+              sx={{
+                bgcolor: 'primary.main',
+                color: 'white',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                width: 64,
+                height: 64,
+                borderRadius: '50%',
+              }}
+            />
           ))}
-        </div>
-      </div>
+        </Stack>
+      </Box>
 
       {/* Statistics Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-4 border-2 border-orange-200">
-          <p className="text-sm text-gray-600 text-center mb-1">Tổng số người trúng</p>
-          <p className="text-3xl font-bold text-orange-600 text-center">
-            {formatCurrency(totalWinners)}
-          </p>
-        </div>
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200">
-          <p className="text-sm text-gray-600 text-center mb-1">Tổng tiền thưởng</p>
-          <p className="text-2xl font-bold text-green-600 text-center">
-            {formatCurrency(draw.totalPrize)} VNĐ
-          </p>
-        </div>
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-200">
-          <p className="text-sm text-gray-600 text-center mb-1">Jackpot</p>
-          <p className="text-2xl font-bold text-purple-600 text-center">
-            {formatCurrency(draw.jackpot)} VNĐ
-          </p>
-        </div>
-      </div>
+      <Grid container spacing={2} sx={{ mb: 4 }}>
+        <Grid item xs={12} md={4}>
+          <Paper variant="outlined" sx={{ p: 2, bgcolor: 'warning.50', borderColor: 'warning.main' }}>
+            <Typography variant="body2" color="text.secondary" align="center">
+              Tổng số người trúng
+            </Typography>
+            <Typography variant="h4" fontWeight="bold" color="warning.main" align="center">
+              {formatCurrency(totalWinners)}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper variant="outlined" sx={{ p: 2, bgcolor: 'success.50', borderColor: 'success.main' }}>
+            <Typography variant="body2" color="text.secondary" align="center">
+              Tổng tiền thưởng
+            </Typography>
+            <Typography variant="h5" fontWeight="bold" color="success.main" align="center">
+              {formatCurrency(draw.totalPrize)} VNĐ
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper variant="outlined" sx={{ p: 2, bgcolor: 'secondary.50', borderColor: 'secondary.main' }}>
+            <Typography variant="body2" color="text.secondary" align="center">
+              Jackpot
+            </Typography>
+            <Typography variant="h5" fontWeight="bold" color="secondary.main" align="center">
+              {formatCurrency(draw.jackpot)} VNĐ
+            </Typography>
+          </Paper>
+        </Grid>
+      </Grid>
 
       {/* Prize Breakdown Table */}
-      <div>
-        <h3 className="text-xl font-bold text-gray-800 mb-4">
+      <Box>
+        <Typography variant="h6" fontWeight="bold" gutterBottom>
           Chi tiết giải thưởng
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-100 border-b-2 border-gray-300">
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                  Loại giải
-                </th>
-                <th className="px-4 py-3 text-right font-semibold text-gray-700">
-                  Giá trị/người
-                </th>
-                <th className="px-4 py-3 text-right font-semibold text-gray-700">
-                  Số người trúng
-                </th>
-                <th className="px-4 py-3 text-right font-semibold text-gray-700">
-                  Tổng tiền
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+        </Typography>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: 'grey.100' }}>
+                <TableCell><strong>Loại giải</strong></TableCell>
+                <TableCell align="right"><strong>Giá trị/người</strong></TableCell>
+                <TableCell align="right"><strong>Số người trúng</strong></TableCell>
+                <TableCell align="right"><strong>Tổng tiền</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {prizeStructure.map((prize, index) => (
-                <tr
+                <TableRow
                   key={index}
-                  className={`border-b border-gray-200 ${
-                    prize.winners > 0 ? 'bg-green-50' : 'hover:bg-gray-50'
-                  }`}
+                  sx={{
+                    bgcolor: prize.winners > 0 ? 'success.50' : 'inherit',
+                    '&:hover': { bgcolor: 'grey.50' },
+                  }}
                 >
-                  <td className="px-4 py-4 font-semibold text-gray-800">
-                    {prize.name}
-                    {prize.winners > 0 && index === 0 && (
-                      <span className="ml-2 text-xs text-green-600">🎉</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-4 text-right text-indigo-600 font-semibold">
-                    {prize.unitPrize} VNĐ
-                  </td>
-                  <td className="px-4 py-4 text-right font-bold text-gray-800">
-                    {formatCurrency(prize.winners)}
-                  </td>
-                  <td className="px-4 py-4 text-right font-bold text-green-600">
-                    {formatCurrency(prize.total)} VNĐ
-                  </td>
-                </tr>
+                  <TableCell>
+                    <Typography fontWeight="600">
+                      {prize.name}
+                      {prize.winners > 0 && index === 0 && ' 🎉'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography color="primary.main" fontWeight="600">
+                      {prize.unitPrize} VNĐ
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography fontWeight="bold">
+                      {formatCurrency(prize.winners)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography color="success.main" fontWeight="bold">
+                      {formatCurrency(prize.total)} VNĐ
+                    </Typography>
+                  </TableCell>
+                </TableRow>
               ))}
-              <tr className="bg-indigo-100 font-bold">
-                <td className="px-4 py-4 text-gray-800" colSpan="2">
-                  Tổng cộng
-                </td>
-                <td className="px-4 py-4 text-right text-gray-800">
-                  {formatCurrency(totalWinners)}
-                </td>
-                <td className="px-4 py-4 text-right text-indigo-600">
-                  {formatCurrency(draw.totalPrize)} VNĐ
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+              <TableRow sx={{ bgcolor: 'primary.50' }}>
+                <TableCell colSpan={2}><strong>Tổng cộng</strong></TableCell>
+                <TableCell align="right">
+                  <Typography fontWeight="bold">
+                    {formatCurrency(totalWinners)}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography color="primary.main" fontWeight="bold">
+                    {formatCurrency(draw.totalPrize)} VNĐ
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
 
       {/* Special Notice */}
       {draw.winners.jackpot > 0 && (
-        <div className="mt-6 bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-400 rounded-xl p-4">
-          <p className="text-center font-bold text-orange-800">
+        <Alert severity="warning" sx={{ mt: 3 }}>
+          <Typography fontWeight="bold">
             🎊 Kỳ này có {draw.winners.jackpot} người trúng Jackpot với tổng giá trị{' '}
             {formatCurrency(draw.winners.jackpot * draw.jackpot)} VNĐ!
-          </p>
-        </div>
+          </Typography>
+        </Alert>
       )}
-    </div>
+    </Paper>
   );
 }
 
